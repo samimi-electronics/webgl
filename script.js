@@ -3,7 +3,7 @@ const vertexShaderSrc = `
 	uniform mat4 uModelViewMatrix;
 	uniform mat4 uProjectionMatrix;
 	void main() {
-		gl_position = aVertexPosition * uModelViewMatrix * uProjectionMatrix;
+		gl_Position =  uProjectionMatrix * uModelViewMatrix * aVertexPosition;
 	}
 `;
 
@@ -21,7 +21,7 @@ function loadShader(gl, type, source) {
 	// Compile the shader source
 	gl.compileShader(shader)
 	// Check if compilation was a success
-	if (!gl.getShaderParameter(shader, gl.COMPLIE_STATUS)) {
+	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 		console.error(`Compiling the shader was unsuccessul. Error: ${gl.getShaderInfoLog(shader)}`)
 		gl.deleteShader(shader)
 		return null
@@ -46,12 +46,16 @@ function initShaderProgram(gl, vsSource, fsSource) {
 }
 
 
+
+
 function main() {
 	console.log('main() executing')
 	const canvas = document.querySelector('#glCanvas')
+
 	
 	// Init Gl context
 	const gl = canvas.getContext('webgl')
+
 
 	// Continue if webgl is available
 	if (gl === null) {
@@ -65,6 +69,19 @@ function main() {
 
 	// Clear the color buffer with specified clear color
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+	const shaderProgram = initShaderProgram(gl, vertexShaderSrc, fragmetShaderSrc)
+
+	const programInfo = {
+		program: shaderProgram,
+		attribLocations: {
+			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition')
+		},
+		uniformLocations: {
+			projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+			modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+		}
+	}
 
 }
 
