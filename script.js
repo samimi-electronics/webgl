@@ -20,13 +20,29 @@ function loadShader(gl, type, source) {
 	gl.shaderSource(shader, source)
 	// Compile the shader source
 	gl.compileShader(shader)
-	// Check if compiplation was a success
+	// Check if compilation was a success
 	if (!gl.getShaderParameter(shader, gl.COMPLIE_STATUS)) {
-		alert(`Compiling the shader was unsuccessul. Error: ${gl.getShaderInfoLog(shader)}`)
+		console.error(`Compiling the shader was unsuccessul. Error: ${gl.getShaderInfoLog(shader)}`)
 		gl.deleteShader(shader)
 		return null
 	}
 	return shader
+}
+
+function initShaderProgram(gl, vsSource, fsSource) {
+	const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
+	const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
+	// Create the shader program
+	const shaderProgram = gl.createProgram()
+	gl.attachShader(shaderProgram, vertexShader)
+	gl.attachShader(shaderProgram, fragmentShader)
+	gl.linkProgram(shaderProgram)
+	// Check if shader creation was a success
+	if(!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+		console.error(`Unable to init the shader program. Error: ${gl.getProgramInfoLog(shaderProgram)}`)
+		return null
+	}
+	return shaderProgram
 }
 
 
