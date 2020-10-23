@@ -14,6 +14,22 @@ const fragmetShaderSrc = `
 `;
 
 
+function loadShader(gl, type, source) {
+	const shader = gl.createShader(type)
+	// Send source to shader obj
+	gl.shaderSource(shader, source)
+	// Compile the shader source
+	gl.compileShader(shader)
+	// Check if compiplation was a success
+	if (!gl.getShaderParameter(shader, gl.COMPLIE_STATUS)) {
+		alert(`Compiling the shader was unsuccessul. Error: ${gl.getShaderInfoLog(shader)}`)
+		gl.deleteShader(shader)
+		return null
+	}
+	return shader
+}
+
+
 function main() {
 	console.log('main() executing')
 	const canvas = document.querySelector('#glCanvas')
